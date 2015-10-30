@@ -74,7 +74,8 @@ func walkFunc(path string, info os.FileInfo, err error) (e error) {
 	// FALSE if we have found nothing or END and no BEGIN.
 	isOpen := false
 
-	// tryCert
+	// tryCert is what we think might be a certificate. We will try
+	// to parse it as an x509 cert.
 	tryCert := ""
 	scanner := bufio.NewScanner(f)
 	for scanner.Scan() {

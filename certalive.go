@@ -95,6 +95,9 @@ func walkFunc(path string, info os.FileInfo, err error) (e error) {
 			tryCert = fmt.Sprintf("%s%s", tryCert, strings.TrimSpace(text))
 			// Try to parse the certificate.
 			p, _ := pem.Decode([]byte(tryCert))
+			if p == nil {
+				return
+			}
 			cert, err := x509.ParseCertificate(p.Bytes)
 			if err == nil {
 				c := *new(certInfo)

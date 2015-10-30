@@ -119,13 +119,13 @@ func walkFunc(path string, info os.FileInfo, err error) (e error) {
 	}
 	return
 }
-func getResults(w http.ResponseWriter, r *http.Request) {
+func serveResults(w http.ResponseWriter, r *http.Request) {
 	wg.Wait()
 	w.Write([]byte(pageHead))
 	for _, cert := range certInfos {
 		certClass := ""
-		yrFromNow := time.Now().AddDate(0, 1, 0)
-		if cert.NotAfter.Before(yrFromNow) {
+		monthAway := time.Now().AddDate(0, 1, 0)
+		if cert.NotAfter.Before(monthAway) {
 			certClass = "warning"
 		}
 		htmlRow := fmt.Sprintf("<div class='row %s'><div>%s</div><div>%s</div><div>%s</div></div>", certClass, cert.NotAfter, html.EscapeString(cert.FileName), html.EscapeString(cert.CertName))
@@ -151,6 +151,6 @@ func main() {
 			time.Sleep(time.Minute)
 		}
 	}()
-	http.HandleFunc("/", getResults)
+	http.HandleFunc("/", serveResults)
 	http.ListenAndServe(":8000", nil)
 }

@@ -24,27 +24,27 @@ type certInfo struct {
 
 var pageHead = `
 <html>
-	<head>
-		<style>
-			p {
-				font-size:18px;
-			}
+    <head>
+        <style>
+            p {
+                font-size:18px;
+            }
 
-			.warning {
-				background-color:#d32d27;
-				color:white;
-			}
+            .warning {
+                background-color:#d32d27;
+                color:white;
+            }
 
-			.row {
-				padding:10px;
-				border-radius:5px;
-				font-family:sans-serif;
-				margin:5px;
-			}
-		</style>
-	</head>
-	<body>
-		<div style='margin:0 auto;max-width:870px;'>
+            .row {
+                padding:10px;
+                border-radius:5px;
+                font-family:sans-serif;
+                margin:5px;
+            }
+        </style>
+    </head>
+    <body>
+        <div style='margin:0 auto;max-width:870px;'>
 `
 
 // wg is used to pevent a webrequest from attempting to return information
@@ -144,17 +144,14 @@ func main() {
 	if len(dir) == 0 {
 		log.Fatalf("Must supply a directory to search for ceritficates.")
 	}
-	go func() {
-		for {
-			wg.Add(1)
-			certInfos = *new([]certInfo)
 
-			// walk through each file or directory and accumulate all the certificates
-			filepath.Walk(dir, walkFunc)
-			wg.Done()
-			time.Sleep(time.Minute)
-		}
-	}()
+	wg.Add(1)
+	certInfos = *new([]certInfo)
+
+	// walk through each file or directory and accumulate all the certificates
+	filepath.Walk(dir, walkFunc)
+	wg.Done()
+
 	http.HandleFunc("/", serveResults)
-	http.ListenAndServe(":8000", nil)
+	http.ListenAndServe(":30080", nil)
 }
